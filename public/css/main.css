@@ -600,3 +600,145 @@ main {
     height: 100%;
     object-fit: cover;
 }
+
+
+/* Адаптивность для мобильных */
+@media (max-width: 600px) {
+    .masonry-grid {
+        column-count: 1; /* Одна колонка на телефоне */
+        column-gap: 16px;
+        padding: 10px 0 20px;
+    }
+    
+    .meme-card {
+        margin-bottom: 16px;
+    }
+    
+    .meme-footer {
+        padding: 12px;
+    }
+    
+    .reactions {
+        gap: 8px;
+        justify-content: center;
+    }
+    
+    .reaction-btn {
+        padding: 4px 10px;
+        font-size: 13px;
+    }
+    
+    /* Шапка для мобильных */
+    .header .container {
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 10px 15px;
+    }
+    
+    .logo {
+        font-size: 20px;
+    }
+    
+    .nav ul {
+        gap: 15px;
+    }
+    
+    .nav a {
+        font-size: 14px;
+    }
+    
+    .search {
+        max-width: 100%;
+        order: 3;
+    }
+    
+    .search input {
+        padding: 8px 12px;
+    }
+    
+    .search button {
+        padding: 8px 15px;
+        font-size: 14px;
+    }
+    
+    .upload-btn {
+        padding: 8px 15px;
+        font-size: 14px;
+    }
+    
+    .upload-btn span {
+        font-size: 18px;
+    }
+    
+    /* Модалка авторизации */
+    .auth-container {
+        padding: 30px 20px;
+        margin: 0 15px;
+    }
+    
+    .auth-tabs {
+        gap: 15px;
+    }
+    
+    .auth-tab {
+        font-size: 16px;
+    }
+    
+    .form-group input {
+        padding: 10px 14px;
+    }
+    
+    /* Кнопка загрузки ещё */
+    .load-more-btn {
+        padding: 12px 30px;
+        font-size: 15px;
+    }
+    
+    /* Пустая галерея */
+    .empty-gallery {
+        padding: 40px 15px;
+    }
+    
+    .empty-icon {
+        font-size: 48px;
+    }
+    
+    .empty-gallery h3 {
+        font-size: 20px;
+    }
+    
+    /* Превью загрузки */
+    .image-preview-grid {
+        grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+        gap: 8px;
+    }
+}
+
+/* Для очень маленьких экранов */
+@media (max-width: 360px) {
+    .header .container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .nav ul {
+        justify-content: center;
+    }
+    
+    .search {
+        flex-direction: column;
+    }
+    
+    .search button {
+        width: 100%;
+    }
+    
+    .reactions {
+        flex-wrap: wrap;
+    }
+    
+    .reaction-btn {
+        flex: 1 1 auto;
+        justify-content: center;
+    }
+}
