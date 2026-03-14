@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tinder мемов</title>
+    <!-- Подключаем CSS позже -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">Мемотека</h1>
+            <!-- <nav class="nav">
+                <ul>
+                    <li><a href="#">Лента</a></li>
+                    <li><a href="#">Топ</a></li>
+                    <li><a href="#">Категории</a></li>
+                </ul>
+            </nav> -->
+            
+            <!-- <div class="search">
+                <input type="text" placeholder="Поиск по тегам...">
+                <button type="submit">Найти</button>
+            </div> -->
+            
+            <div class="upload-btn-container">
+                <button id="upload-btn" class="upload-btn">
+                    <span>+</span> Загрузить мем
+                </button>
+            </div>
+
+
+            <!-- Модальное окно загрузки -->
+            <div id="upload-modal" class="auth-modal">
+                <div class="auth-container" style="max-width: 500px;">
+                    <button class="auth-close" id="close-upload">&times;</button>
+                    <h2 style="margin-bottom: 20px;">Загрузить мемы</h2>
+                    
+                    <form id="upload-form">
+                        <div class="form-group">
+                            <label>Выберите изображения (можно несколько)</label>
+                            <input type="file" id="meme-file" accept="image/*" multiple required>
+                            <div id="image-preview" class="image-preview-grid"></div>
+                        </div>
+                        
+                        <!-- ТЕГИ УБРАНЫ! -->
+                        
+                        <button type="submit" class="auth-submit" id="submit-upload">Загрузить</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Кнопка входа / меню пользователя -->
+            <button id="login-btn" class="user-btn" style="margin-left: 20px;">
+                <span class="avatar">👤</span>
+                <span>Войти</span>
+            </button>
+            
+            <!-- Меню пользователя (скрыто по умолчанию) -->
+            <div id="user-menu" class="user-menu" style="display: none;">
+                <button class="user-btn">
+                    <span id="user-avatar" class="avatar"></span>
+                    <span id="user-name"></span>
+                </button>
+                <div class="user-dropdown">
+                    <a href="#">Профиль</a>
+                    <a href="#">Мои реакции</a>
+                    <a href="#">Настройки</a>
+                    <button id="logout-btn" class="logout-btn">Выйти</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Модальное окно авторизации -->
+    <div id="auth-modal" class="auth-modal">
+        <div class="auth-container">
+            <button class="auth-close">&times;</button>
+            
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-tab="login">Вход</button>
+                <button class="auth-tab" data-tab="register">Регистрация</button>
+            </div>
+            
+            <!-- Форма входа -->
+            <form id="login-form" class="auth-form active">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="login-email" required>
+                </div>
+                <div class="form-group">
+                    <label>Пароль</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <button type="submit" class="auth-submit">Войти</button>
+                <div class="auth-switch">
+                    Нет аккаунта? <button type="button" id="switch-to-register">Зарегистрироваться</button>
+                </div>
+            </form>
+            
+            <!-- Форма регистрации -->
+            <form id="register-form" class="auth-form">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="reg-email" required>
+                </div>
+                <div class="form-group">
+                    <label>Имя пользователя</label>
+                    <input type="text" id="reg-username" required>
+                </div>
+                <div class="form-group">
+                    <label>Пароль</label>
+                    <input type="password" id="reg-password" required>
+                </div>
+                <div class="form-group">
+                    <label>Подтверждение пароля</label>
+                    <input type="password" id="reg-confirm" required>
+                </div>
+                <button type="submit" class="auth-submit">Зарегистрироваться</button>
+                <div class="auth-switch">
+                    Уже есть аккаунт? <button type="button" id="switch-to-login">Войти</button>
+                </div>
+            </form>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <button id="cancel-auth" class="category-btn">Отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <main>
+
+        <!-- Галерея (сетка как Pinterest) -->
+        <section class="gallery">
+            <div class="container">
+                <div class="masonry-grid" id="masonry-grid">
+
+                </div>
+            </div>
+        </section>
+
+        <div class="load-more-container">
+            <button id="load-more-btn" class="load-more-btn">Загрузить ещё</button>
+        </div>
+
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2025 Мемотека. Свайпай мемы, ставь теги.</p>
+        </div>
+    </footer>
+
+    <!-- Подключаем JS позже -->
+    <script src="data/memes.js"></script>
+    <script src="js/upload.js"></script>
+    <script src="js/script.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+</html>
