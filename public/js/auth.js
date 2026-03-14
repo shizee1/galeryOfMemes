@@ -42,81 +42,47 @@ function closeAuthModal() {
     authModal.classList.remove('active');
 }
 
-// Обновить UI после входа
-function updateUserUI(user) {
-    if (user) {
-        userName.textContent = user.username;
-        userAvatar.textContent = user.username[0].toUpperCase();
-        userMenu.style.display = 'block';
-    } else {
-        userMenu.style.display = 'none';
-    }
-}
-
-// Регистрация
+// РЕГИСТРАЦИЯ (исправлено)
 async function register(email, username, password) {
-    // Имитация запроса к серверу
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            // Проверка на существующего пользователя
-            const users = JSON.parse(localStorage.getItem('users') || '[]');
-            
-            if (users.find(u => u.email === email)) {
-                reject('Email уже зарегистрирован');
-                return;
-            }
-            
-            if (users.find(u => u.username === username)) {
-                reject('Имя пользователя уже занято');
-                return;
-            }
-            
-            // Создаем пользователя
-            const newUser = {
-                id: Date.now(),
-                email,
-                username,
-                password: btoa(password), // Просто для демо, в реальности хешировать
-                createdAt: new Date().toISOString()
-            };
-            
-            users.push(newUser);
-            localStorage.setItem('users', JSON.stringify(users));
-            
-            // Сохраняем сессию
-            const { password: _, ...userWithoutPassword } = newUser;
-            localStorage.setItem('currentUser', JSON.stringify(userWithoutPassword));
-            
-            resolve(userWithoutPassword);
-        }, 800);
+    const response = await fetch('/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, username, password })
     });
+    
+    const data = await response.json();
+    
+    if (!data.success) {
+        throw new Error(data.message);
+    }
+    
+    return data.user;
 }
 
-// Логин
+// ЛОГИН (исправлено)
 async function login(email, password) {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            const users = JSON.parse(localStorage.getItem('users') || '[]');
-            const user = users.find(u => u.email === email && u.password === btoa(password));
-            
-            if (!user) {
-                reject('Неверный email или пароль');
-                return;
-            }
-            
-            const { password: _, ...userWithoutPassword } = user;
-            localStorage.setItem('currentUser', JSON.stringify(userWithoutPassword));
-            
-            resolve(userWithoutPassword);
-        }, 800);
+    const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
     });
+    
+    const data = await response.json();
+    
+    if (!data.success) {
+        throw new Error(data.message);
+    }
+    
+    return data.user;
 }
 
 // Выход
 function logout() {
     localStorage.removeItem('currentUser');
     currentUser = null;
-    userReactions = {};
+    if (typeof userReactions !== 'undefined') {
+        userReactions = {};
+    }
     updateUserUI(null);
     showNotification('Вы вышли из аккаунта');
 }
@@ -129,6 +95,48 @@ function checkAuth() {
         updateUserUI(currentUser);
     }
 }
+
+// Обновление UI после входа/выхода
+window.updateUserUI = function(user) {
+    const loginBtn = document.getElementById('login-btn');
+    const userMenu = document.getElementById('user-menu');
+    const userName = document.getElementById('user-name');
+    const userAvatar = document.getElementById('user-avatar');
+    
+    if (user) {
+        userName.textContent = user.username;
+        userAvatar.textContent = user.username[0].toUpperCase();
+        userMenu.style.display = 'block';
+        loginBtn.style.display = 'none';
+        
+        // Сохраняем в localStorage
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        currentUser = user;
+        
+        // Загружаем реакции пользователя
+        if (typeof loadUserReactions === 'function') {
+            loadUserReactions();
+        }
+        
+        // Обновляем состояние кнопок
+        if (typeof refreshReactionsState === 'function') {
+            refreshReactionsState();
+        }
+    } else {
+        userMenu.style.display = 'none';
+        loginBtn.style.display = 'flex';
+        localStorage.removeItem('currentUser');
+        currentUser = null;
+        
+        if (typeof userReactions !== 'undefined') {
+            userReactions = {};
+        }
+        
+        if (typeof refreshReactionsState === 'function') {
+            refreshReactionsState();
+        }
+    }
+};
 
 // Обработчики событий
 document.addEventListener('DOMContentLoaded', () => {
@@ -166,12 +174,11 @@ document.addEventListener('DOMContentLoaded', () => {
         
         try {
             const user = await register(email, username, password);
-            currentUser = user;
             updateUserUI(user);
             closeAuthModal();
             showNotification(`Добро пожаловать, ${user.username}!`);
         } catch (error) {
-            showNotification(error, 'error');
+            showNotification(error.message, 'error');
         }
     });
     
@@ -184,12 +191,11 @@ document.addEventListener('DOMContentLoaded', () => {
         
         try {
             const user = await login(email, password);
-            currentUser = user;
             updateUserUI(user);
             closeAuthModal();
             showNotification(`С возвращением, ${user.username}!`);
         } catch (error) {
-            showNotification(error, 'error');
+            showNotification(error.message, 'error');
         }
     });
     
@@ -216,40 +222,3 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
-
-function updateUserUI(user) {
-    const loginBtn = document.getElementById('login-btn');
-    const userMenu = document.getElementById('user-menu');
-    
-    if (user) {
-        // Показываем меню пользователя
-        userName.textContent = user.username;
-        userAvatar.textContent = user.username[0].toUpperCase();
-        userMenu.style.display = 'block';
-        
-        // Прячем кнопку входа
-        loginBtn.style.display = 'none';
-        
-        // Загружаем реакции пользователя
-        loadUserReactions();
-        
-        // Обновляем состояние кнопок
-        if (typeof refreshReactionsState === 'function') {
-            refreshReactionsState();
-        }
-    } else {
-        // Прячем меню пользователя
-        userMenu.style.display = 'none';
-        
-        // Показываем кнопку входа
-        loginBtn.style.display = 'flex';
-        
-        // Очищаем реакции
-        userReactions = {};
-        
-        // Обновляем состояние кнопок
-        if (typeof refreshReactionsState === 'function') {
-            refreshReactionsState();
-        }
-    }
-}
