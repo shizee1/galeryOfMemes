@@ -604,6 +604,11 @@ main {
 
 /* Адаптивность для мобильных */
 @media (max-width: 600px) {
+
+    .logo {
+        display: none;
+    }
+
     .masonry-grid {
         column-count: 1; /* Одна колонка на телефоне */
         column-gap: 16px;
@@ -721,18 +726,10 @@ main {
         align-items: stretch;
     }
     
-    .nav ul {
-        justify-content: center;
+    .logo{
+        display: none;
     }
-    
-    .search {
-        flex-direction: column;
-    }
-    
-    .search button {
-        width: 100%;
-    }
-    
+
     .reactions {
         flex-wrap: wrap;
     }
